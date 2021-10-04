@@ -33,7 +33,7 @@ func TestM(t *testing.T) {
 	resp := &Response{
 		Metric: "metric.metric",
 		Tags:   TagSet{},
-		DPS: map[Timestamp]Point{
+		DPS: map[Epoch]Point{
 			123: 1.1,
 		},
 	}
