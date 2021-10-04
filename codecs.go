@@ -18,3 +18,11 @@ func (v Epoch) MarshalText() (text []byte, err error) {
 func (v Epoch) String() string {
 	return strconv.FormatInt(int64(v), 10)
 }
+
+type EpochSlice []Epoch
+
+func (x EpochSlice) Len() int           { return len(x) }
+func (x EpochSlice) Less(i, j int) bool { return x[i] < x[j] }
+func (x EpochSlice) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+
+func (x EpochSlice) Sort() { Sort(x) }
