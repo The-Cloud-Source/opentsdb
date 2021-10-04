@@ -1,6 +1,7 @@
 package opentsdb
 
 import (
+	"sort"
 	"strconv"
 )
 
@@ -25,4 +26,4 @@ func (x EpochSlice) Len() int           { return len(x) }
 func (x EpochSlice) Less(i, j int) bool { return x[i] < x[j] }
 func (x EpochSlice) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
 
-func (x EpochSlice) Sort() { Sort(x) }
+func (x EpochSlice) Sort() { sort.Sort(x) }
