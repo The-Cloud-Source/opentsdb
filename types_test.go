@@ -19,7 +19,7 @@ func TestM(t *testing.T) {
 	dec := json.NewDecoder(bytes.NewReader(in1))
 	err := dec.Decode(&r)
 
-	t.Errorf("%v %v", r.Start, r.End)
+	t.Errorf("%s %s", r.Start, r.End)
 	t.Errorf("%v", err)
 
 	r2 := &Request{}
@@ -29,4 +29,23 @@ func TestM(t *testing.T) {
 
 	b, err := json.Marshal(r2)
 	t.Errorf("%v %v", string(b), err)
+
+	resp := &Response{
+		Metric: "metric.metric",
+		Tags:   TagSet{},
+		DPS: map[Timestamp]Point{
+			123: 1.1,
+		},
+	}
+	b2, err := json.Marshal(resp)
+	t.Errorf("%v %v", string(b2), err)
+
+	//in := []byte(`{"metric":"","tags":null,"aggregateTags":null,"query":{"metric":"","aggregator":"","rateOptions":{}},"dps":{"123":1.1}}`)
+	res := &Request{}
+	dec1 := json.NewDecoder(bytes.NewReader(b2))
+	err1 := dec1.Decode(&res)
+
+	t.Errorf("%v", *res)
+	t.Errorf("%v", err1)
+
 }

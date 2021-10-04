@@ -33,17 +33,20 @@ func (r ResponseSet) Copy() ResponseSet {
 	return newSet
 }
 
+// Epoch is the timestamp for a datapoint
+type Epoch int64
+
 // Point is the Response data point type.
 type Point float64
 
 // Response is a query response:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#response.
 type Response struct {
-	Metric        string           `json:"metric"`
-	Tags          TagSet           `json:"tags"`
-	AggregateTags []string         `json:"aggregateTags"`
-	Query         Query            `json:"query,omitempty"`
-	DPS           map[string]Point `json:"dps"`
+	Metric        string          `json:"metric"`
+	Tags          TagSet          `json:"tags"`
+	AggregateTags []string        `json:"aggregateTags"`
+	Query         Query           `json:"query,omitempty"`
+	DPS           map[Epoch]Point `json:"dps"`
 
 	//missing "annotations": [...]
 	//missing "annotations": [...]
@@ -58,7 +61,7 @@ func (r *Response) Copy() *Response {
 	newR.Metric = r.Metric
 	newR.Tags = r.Tags.Copy()
 	copy(newR.AggregateTags, r.AggregateTags)
-	newR.DPS = map[string]Point{}
+	newR.DPS = map[Epoch]Point{}
 	for k, v := range r.DPS {
 		newR.DPS[k] = v
 	}
@@ -69,7 +72,7 @@ func (r *Response) Copy() *Response {
 // http://opentsdb.net/docs/build/html/api_http/put.html#example-single-data-point-put.
 type DataPoint struct {
 	Metric    string      `json:"metric"`
-	Timestamp int64       `json:"timestamp"`
+	Timestamp Epoch       `json:"timestamp"`
 	Value     interface{} `json:"value"`
 	Tags      TagSet      `json:"tags"`
 }
@@ -81,7 +84,7 @@ func (d *DataPoint) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(struct {
 		Metric    string      `json:"metric"`
-		Timestamp int64       `json:"timestamp"`
+		Timestamp Epoch       `json:"timestamp"`
 		Value     interface{} `json:"value"`
 		Tags      TagSet      `json:"tags"`
 	}{
@@ -353,19 +356,19 @@ func MustReplace(s, replacement string) string {
 // Request holds query objects:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#requests.
 type Request struct {
-	Start             TimeTSDB `json:"start"`
-	End               TimeTSDB `json:"end,omitempty"`
-	Queries           []*Query `json:"queries"`
-	NoAnnotations     bool     `json:"noAnnotations,omitempty"`
-	GlobalAnnotations bool     `json:"globalAnnotations,omitempty"`
-	MsResolution      bool     `json:"msResolution,omitempty"`
-	ShowTSUIDs        bool     `json:"showTSUIDs,omitempty"`
-	ShowSummary       bool     `json:"showSummary,omitempty"`
-	ShowStats         bool     `json:"showStats,omitempty"`
-	ShowQuery         bool     `json:"showQuery,omitempty"`
-	Delete            bool     `json:"delete,omitempty"`
-	UseCalendar       bool     `json:"useCalendar,omitempty"`
-	Timezone          string   `json:"timezone,omitempty"`
+	Start             interface{} `json:"start"`
+	End               interface{} `json:"end,omitempty"`
+	Queries           []*Query    `json:"queries"`
+	NoAnnotations     bool        `json:"noAnnotations,omitempty"`
+	GlobalAnnotations bool        `json:"globalAnnotations,omitempty"`
+	MsResolution      bool        `json:"msResolution,omitempty"`
+	ShowTSUIDs        bool        `json:"showTSUIDs,omitempty"`
+	ShowSummary       bool        `json:"showSummary,omitempty"`
+	ShowStats         bool        `json:"showStats,omitempty"`
+	ShowQuery         bool        `json:"showQuery,omitempty"`
+	Delete            bool        `json:"delete,omitempty"`
+	UseCalendar       bool        `json:"useCalendar,omitempty"`
+	Timezone          string      `json:"timezone,omitempty"`
 }
 
 // RequestFromJSON creates a new request from JSON.
@@ -462,7 +465,7 @@ func ParseRequest(req string, version Version) (*Request, error) {
 	if s == "" {
 		return nil, fmt.Errorf("opentsdb: missing start: %s", req)
 	}
-	r.Start = TimeTSDB(s)
+	r.Start = TimeSpec(s)
 	for _, m := range v["m"] {
 		q, err := ParseQuery(m, version)
 		if err != nil {
@@ -886,15 +889,15 @@ func (r *Request) SetTime(t time.Time) error {
 	if err != nil {
 		return err
 	}
-	r.Start = TimeTSDB(strconv.FormatInt(start.Add(diff).Unix(), 10))
+	r.Start = TimeSpec(strconv.FormatInt(start.Add(diff).Unix(), 10))
 	if r.End != "" {
 		end, err := ParseTime(r.End)
 		if err != nil {
 			return err
 		}
-		r.End = TimeTSDB(strconv.FormatInt(end.Add(diff).Unix(), 10))
+		r.End = TimeSpec(strconv.FormatInt(end.Add(diff).Unix(), 10))
 	} else {
-		r.End = TimeTSDB(strconv.FormatInt(t.UTC().Unix(), 10))
+		r.End = TimeSpec(strconv.FormatInt(t.UTC().Unix(), 10))
 	}
 	return nil
 }
@@ -998,6 +1001,12 @@ var Version2_1 = Version{2, 1}
 
 // OpenTSDB 2.2 version struct
 var Version2_2 = Version{2, 2}
+
+// OpenTSDB 2.3 version struct
+var Version2_3 = Version{2, 3}
+
+// OpenTSDB 2.4 version struct
+var Version2_4 = Version{2, 4}
 
 type Version struct {
 	Major int64
