@@ -372,7 +372,6 @@ type Request struct {
 }
 
 // RequestFromJSON creates a new request from JSON.
-/*
 func RequestFromJSON(b []byte) (*Request, error) {
 	var r Request
 	if err := json.Unmarshal(b, &r); err != nil {
@@ -382,7 +381,6 @@ func RequestFromJSON(b []byte) (*Request, error) {
 	r.End = TryParseAbsTime(r.End)
 	return &r, nil
 }
-*/
 
 // Query is a query for a request:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#sub-queries.
