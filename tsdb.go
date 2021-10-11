@@ -385,15 +385,15 @@ func RequestFromJSON(b []byte) (*Request, error) {
 // Query is a query for a request:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#sub-queries.
 type Query struct {
-	Metric       string      `json:"metric"`
-	Aggregator   string      `json:"aggregator"`
-	Rate         bool        `json:"rate,omitempty"`
-	RateOptions  RateOptions `json:"rateOptions,omitempty"`
-	Downsample   string      `json:"downsample,omitempty"`
-	Tags         TagSet      `json:"tags,omitempty"`
-	Filters      Filters     `json:"filters,omitempty"`
-	ExplicitTags bool        `json:"explicitTags,omitempty"`
-	GroupByTags  TagSet      `json:"-"`
+	Metric       string       `json:"metric"`
+	Aggregator   string       `json:"aggregator"`
+	Rate         bool         `json:"rate,omitempty"`
+	RateOptions  *RateOptions `json:"rateOptions,omitempty"`
+	Downsample   string       `json:"downsample,omitempty"`
+	Tags         TagSet       `json:"tags,omitempty"`
+	Filters      Filters      `json:"filters,omitempty"`
+	ExplicitTags bool         `json:"explicitTags,omitempty"`
+	GroupByTags  TagSet       `json:"-"`
 	//percentiles
 	//rollupUsage
 }
