@@ -714,15 +714,22 @@ func (q Query) String() string {
 }
 
 func (r *Request) String() string {
+	s, _ := url.QueryUnescape(r.Encode())
+	return s
+}
+
+func (r *Request) Encode() string {
 	v := make(url.Values)
-	for _, q := range r.Queries {
-		v.Add("m", q.String())
-	}
+
 	if start, err := CanonicalTime(r.Start); err == nil {
 		v.Add("start", start)
 	}
 	if end, err := CanonicalTime(r.End); err == nil {
 		v.Add("end", end)
+	}
+
+	for _, q := range r.Queries {
+		v.Add("m", q.String())
 	}
 	return v.Encode()
 }
@@ -732,7 +739,7 @@ func (r *Request) Search() string {
 	// OpenTSDB uses the URL hash, not search parameters, to do this. The values are
 	// not URL encoded. So it's the same as a url.Values just left as normal
 	// strings.
-	v, err := url.ParseQuery(r.String())
+	v, err := url.ParseQuery(r.Encode())
 	if err != nil {
 		return ""
 	}

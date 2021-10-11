@@ -6,6 +6,21 @@ import (
 	"testing"
 )
 
+func TestJSON(t *testing.T) {
+
+	var q = []byte(
+		`{"start":1633860709920,"queries":[{"metric":"system.cpu.percent","aggregator":"sum","downsample":"15s-avg","tags":{"host":"*"}}],"msResolution":false,"globalAnnotations":true,"showQuery":true}`)
+
+	r := &Request{}
+	dec := json.NewDecoder(bytes.NewReader(q))
+	err := dec.Decode(&r)
+
+	t.Errorf("||| %s", r.String())
+	t.Errorf("||| %s", r.Encode())
+	t.Errorf("||| %v", err)
+
+}
+
 var in1 = []byte(`
 {
   "start": 1629380400000,
