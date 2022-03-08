@@ -854,7 +854,7 @@ func GetDuration(r *Request) (Duration, error) {
 		return t, err
 	}
 	var end time.Time
-	if r.End != "" {
+	if r.End != nil && r.End != "" {
 		end, err = ParseTime(r.End)
 		if err != nil {
 			return t, err
