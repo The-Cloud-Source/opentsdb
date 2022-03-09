@@ -3,6 +3,7 @@ package opentsdb
 import (
 	"errors"
 	"regexp"
+	"time"
 )
 
 var dRexStr = `([+-]?[0-9]+.?[0-9]*(?:ms|s|m|h|d|w|n|y))(?:-[a-z]+)(?:-[a-z]+)?`
