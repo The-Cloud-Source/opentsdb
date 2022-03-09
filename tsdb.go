@@ -839,7 +839,7 @@ func ParseTime(v interface{}) (time.Time, error) {
 		}
 		return time.Unix(i2, 0).UTC(), nil
 	default:
-		return time.Time{}, fmt.Errorf("type must be string or int64, got: %v", v)
+		return time.Time{}, fmt.Errorf("type must be string or int64, got: %v %T", v, v)
 	}
 }
 
