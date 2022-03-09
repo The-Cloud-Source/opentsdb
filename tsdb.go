@@ -775,6 +775,11 @@ func CanonicalTime(v interface{}) (string, error) {
 // the epoch as an int64 is returned. Otherwise, v is returned.
 func TryParseAbsTime(v interface{}) interface{} {
 	switch v := v.(type) {
+	case TimeSpec:
+		d, err := ParseAbsTime(v.String())
+		if err == nil {
+			return d.Unix()
+		}
 	case string:
 		d, err := ParseAbsTime(v)
 		if err == nil {
