@@ -18,11 +18,12 @@ func ParseDownsample(d string) (Duration, error) {
 	return ParseDuration(match[1])
 }
 
-func (r *Request) GetMinDownsample() (Duration, error) {
+const maxDuration = Duration(^uint(0) >> 1)
 
-	var ds Duration = 0xffffffff
+func (r *Request) GetMinDownsample() (Duration, error) {
+	var ds Duration = maxDuration
 	if len(r.Queries) < 1 {
-		return 0, nil
+		return ds, nil
 	}
 
 	for _, q := range r.Queries {
@@ -32,6 +33,10 @@ func (r *Request) GetMinDownsample() (Duration, error) {
 				ds = tmp
 			}
 		}
+	}
+
+	if ds == maxDuration {
+		return Duration(10 * time.Second), nil
 	}
 	return ds, nil
 }
