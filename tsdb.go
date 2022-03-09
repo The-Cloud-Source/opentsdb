@@ -843,6 +843,10 @@ func ParseTime(v interface{}) (time.Time, error) {
 	}
 }
 
+func (r *Request) GetDuration() (Duration, error) {
+	return GetDuration(r)
+}
+
 // GetDuration returns the duration from the request's start to end.
 func GetDuration(r *Request) (Duration, error) {
 	var t Duration

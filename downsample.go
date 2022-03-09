@@ -17,3 +17,37 @@ func ParseDownsample(d string) (Duration, error) {
 
 	return ParseDuration(match[1])
 }
+
+func (r *Request) GetMinDownsample() (Duration, error) {
+
+	var ds Duration = 0xffffffff
+	if len(r.Queries) < 1 {
+		return 0, nil
+	}
+
+	for _, q := range r.Queries {
+		tmp, err := ParseDownsample(q.Downsample)
+		if err == nil {
+			if tmp < ds {
+				ds = tmp
+			}
+		}
+	}
+	return ds, nil
+}
+
+func (r *Request) EstimateDPS() (dps int64, err error) {
+
+	duration, err := r.GetDuration()
+	if err != nil {
+		return dps, err
+	}
+
+	downsample, err := r.GetMinDownsample()
+	if err != nil {
+		return dps, err
+	}
+
+	dps = int64(duration / downsample)
+	return dps, nil
+}
