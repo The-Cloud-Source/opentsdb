@@ -814,6 +814,19 @@ func ParseTime(v interface{}) (time.Time, error) {
 	now := time.Now().UTC()
 	const max32 int64 = 0xffffffff
 	switch i := v.(type) {
+	case TimeSpec:
+		if i.String() != "" {
+			if strings.HasSuffix(i.String(), "-ago") {
+				s := strings.TrimSuffix(i.String(), "-ago")
+				d, err := ParseDuration(s)
+				if err != nil {
+					return now, err
+				}
+				return now.Add(time.Duration(-d)), nil
+			}
+			return ParseAbsTime(i.String())
+		}
+		return now, nil
 	case string:
 		if i != "" {
 			if strings.HasSuffix(i, "-ago") {
