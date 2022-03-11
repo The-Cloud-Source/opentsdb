@@ -1,7 +1,6 @@
 package opentsdb
 
 import (
-	"log"
 	"strconv"
 )
 
@@ -23,7 +22,6 @@ func (n TimeSpec) Int64() (int64, error) {
 func (t *TimeSpec) UnmarshalJSON(data []byte) error {
 	v := TimeSpec(data)
 	*t = v
-	log.Printf("%s", string(data))
 	return nil
 }
 
