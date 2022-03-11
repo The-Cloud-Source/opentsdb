@@ -763,6 +763,13 @@ func CanonicalTime(v interface{}) (string, error) {
 			return s, nil
 		}
 	}
+
+	if s, ok := v.(TimeSpec); ok {
+		if strings.HasSuffix(s.String(), "-ago") {
+			return s.String(), nil
+		}
+	}
+
 	t, err := ParseTime(v)
 	if err != nil {
 		return "", err
