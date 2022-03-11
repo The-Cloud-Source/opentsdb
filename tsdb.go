@@ -793,6 +793,14 @@ func TryParseAbsTime(v interface{}) interface{} {
 			return d.Unix()
 		}
 	case float64:
+		if v > 9999999999.0 {
+			v = v / 1000
+		}
+		return int64(v)
+	case int64:
+		if v > 9999999999 {
+			v = v / 1000
+		}
 		return int64(v)
 	}
 	return v
@@ -817,6 +825,9 @@ func ParseAbsTime(s string) (time.Time, error) {
 	if err != nil {
 		return t, err
 	}
+	if i > 9999999999 {
+		i = i / 1000
+	}
 	return time.Unix(i, 0), nil
 }
 
@@ -824,7 +835,7 @@ func ParseAbsTime(s string) (time.Time, error) {
 // OpenTSDB.
 func ParseTime(v interface{}) (time.Time, error) {
 	now := time.Now().UTC()
-	const max32 int64 = 0xffffffff
+	const max32 int64 = 9999999999 //0xffffffff
 	switch i := v.(type) {
 	case TimeSpec:
 		if i.String() != "" {
