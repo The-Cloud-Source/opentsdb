@@ -872,6 +872,20 @@ func (r *Request) GetDuration() (Duration, error) {
 	return GetDuration(r)
 }
 
+func (r *Request) GetEnd() (TimeSpec, error) {
+	var end time.Time
+	var err error
+	if r.End != nil && r.End != "" {
+		end, err = ParseTime(r.End)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		end = time.Now().UTC()
+	}
+	return TimeSpec(strconv.FormatInt(end.Unix(), 10)), nil
+}
+
 // GetDuration returns the duration from the request's start to end.
 func GetDuration(r *Request) (Duration, error) {
 	var t Duration
