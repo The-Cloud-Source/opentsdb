@@ -2,6 +2,8 @@ package opentsdb
 
 import (
 	"strconv"
+	"strings"
+	"time"
 )
 
 type TimeSpec string
@@ -27,4 +29,33 @@ func (t *TimeSpec) UnmarshalJSON(data []byte) error {
 
 func (t TimeSpec) MarshalJSON() ([]byte, error) {
 	return []byte(t), nil
+}
+
+func (v TimeSpec) CanonicalTimeString(defaultNow bool) (string, error) {
+
+	s := string(v)
+
+	if len(s) == 0 {
+		if defaultNow {
+			return time.Now().UTC().Format(TSDBTimeFormat), nil
+		} else {
+			return s, nil
+		}
+	}
+
+	if strings.HasSuffix(s, "-ago") {
+		return s, nil
+	}
+
+	if len(s) == 13 || len(s) == 10 {
+		i, err := v.Int64()
+		if err == nil {
+			if len(s) == 13 {
+				i = i / 1000
+			}
+			return time.Unix(i, 0).Format(TSDBTimeFormat), nil
+		}
+	}
+
+	return s, nil
 }
