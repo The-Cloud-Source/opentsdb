@@ -812,15 +812,20 @@ func TryParseAbsTime(v interface{}) interface{} {
 // "X-ago") format supported by OpenTSDB.
 func ParseAbsTime(s string) (time.Time, error) {
 	var t time.Time
-	tFormats := [4]string{
+	tFormats := [7]string{
 		"2006/01/02-15:04:05",
+		"2006/01/02 15:04:05",
 		"2006/01/02-15:04",
+		"2006/01/02 15:04",
 		"2006/01/02-15",
+		"2006/01/02 15",
 		"2006/01/02",
 	}
 	for _, f := range tFormats {
-		if t, err := time.Parse(f, s); err == nil {
-			return t, nil
+		if len(f) == len(s) {
+			if t, err := time.Parse(f, s); err == nil {
+				return t, nil
+			}
 		}
 	}
 	i, err := strconv.ParseInt(s, 10, 64)
@@ -849,7 +854,7 @@ func ParseTime(v interface{}) (time.Time, error) {
 				}
 				return now.Add(time.Duration(-d)), nil
 			}
-			if i.String() == "now" {
+			if strings.ToLower(i.String()) == "now" {
 				return now, nil
 			}
 			return ParseAbsTime(i.String())
@@ -865,7 +870,7 @@ func ParseTime(v interface{}) (time.Time, error) {
 				}
 				return now.Add(time.Duration(-d)), nil
 			}
-			if i == "now" {
+			if strings.ToLower(i) == "now" {
 				return now, nil
 			}
 			return ParseAbsTime(i)

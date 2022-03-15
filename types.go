@@ -47,7 +47,7 @@ func (v TimeSpec) CanonicalTimeString(defaultNow bool) (string, error) {
 		return s, nil
 	}
 
-	if s == "now" {
+	if strings.ToLower(s) == "now" {
 		return s, nil
 	}
 
