@@ -682,7 +682,7 @@ func (q Query) String() string {
 	}
 	if q.Rate {
 		s += "rate"
-		if q.RateOptions.Counter {
+		if q.RateOptions != nil && q.RateOptions.Counter {
 			s += "{"
 			if q.RateOptions.DropResets {
 				s += "dropcounter"
