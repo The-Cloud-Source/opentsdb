@@ -849,6 +849,9 @@ func ParseTime(v interface{}) (time.Time, error) {
 				}
 				return now.Add(time.Duration(-d)), nil
 			}
+			if i.String() == "now" {
+				return now, nil
+			}
 			return ParseAbsTime(i.String())
 		}
 		return now, nil
@@ -861,6 +864,9 @@ func ParseTime(v interface{}) (time.Time, error) {
 					return now, err
 				}
 				return now.Add(time.Duration(-d)), nil
+			}
+			if i == "now" {
+				return now, nil
 			}
 			return ParseAbsTime(i)
 		}

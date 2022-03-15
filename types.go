@@ -47,6 +47,10 @@ func (v TimeSpec) CanonicalTimeString(defaultNow bool) (string, error) {
 		return s, nil
 	}
 
+	if s == "now" {
+		return s, nil
+	}
+
 	if len(s) == 13 || len(s) == 10 {
 		i, err := v.Int64()
 		if err == nil {
