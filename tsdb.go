@@ -682,25 +682,27 @@ func (q Query) String() string {
 	}
 	if q.Rate {
 		s += "rate"
-		if q.RateOptions != nil && q.RateOptions.Counter {
-			s += "{"
-			if q.RateOptions.DropResets {
-				s += "dropcounter"
-			} else {
-				s += "counter"
-			}
-			if q.RateOptions.CounterMax != 0 {
-				s += ","
-				s += strconv.FormatInt(q.RateOptions.CounterMax, 10)
-			}
-			if q.RateOptions.ResetValue != 0 {
-				if q.RateOptions.CounterMax == 0 {
-					s += ","
+		if q.RateOptions != nil {
+			if q.RateOptions.Counter {
+				s += "{"
+				if q.RateOptions.DropResets {
+					s += "dropcounter"
+				} else {
+					s += "counter"
 				}
-				s += ","
-				s += strconv.FormatInt(q.RateOptions.ResetValue, 10)
+				if q.RateOptions.CounterMax != 0 {
+					s += ","
+					s += strconv.FormatInt(q.RateOptions.CounterMax, 10)
+				}
+				if q.RateOptions.ResetValue != 0 {
+					if q.RateOptions.CounterMax == 0 {
+						s += ","
+					}
+					s += ","
+					s += strconv.FormatInt(q.RateOptions.ResetValue, 10)
+				}
+				s += "}"
 			}
-			s += "}"
 		}
 		s += ":"
 	}
