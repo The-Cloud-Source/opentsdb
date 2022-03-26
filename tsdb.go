@@ -1034,6 +1034,9 @@ func (r *Request) QueryResponse(host string, client *http.Client) (*http.Respons
 	}
 
 	req, err := http.NewRequest("POST", u.String(), bytes.NewReader(b))
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Add("Content-Type", "application/json")
 	if userAgent != "" {
 		req.Header.Add("User-Agent", userAgent)
