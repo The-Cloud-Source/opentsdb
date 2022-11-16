@@ -507,6 +507,9 @@ func ParseQuery(query string, version Version) (q *Query, err error) {
 	q.Downsample = result["downsample"]
 	q.Rate = strings.HasPrefix(result["rate"], "rate")
 	if q.Rate && len(result["rate"]) > 4 {
+		if q.RateOptions == nil {
+			q.RateOptions = &RateOptions{}
+		}
 		s := result["rate"][4:]
 		if !strings.HasSuffix(s, "}") || !strings.HasPrefix(s, "{") {
 			err = fmt.Errorf("opentsdb: invalid rate options")

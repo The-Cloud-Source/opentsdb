@@ -7,6 +7,7 @@ package opentsdb
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -146,6 +147,17 @@ func leadingInt(s string) (x int64, rem string, err error) {
 
 func (d Duration) String() string {
 	return fmt.Sprintf("%dms", d/Millisecond)
+}
+
+func (d Duration) SpanString() string {
+	s := time.Duration(d).String()
+	if strings.HasSuffix(s, "m0s") {
+		s = s[:len(s)-2]
+	}
+	if strings.HasSuffix(s, "h0m") {
+		s = s[:len(s)-2]
+	}
+	return s
 }
 
 func (d Duration) HumanString() string {

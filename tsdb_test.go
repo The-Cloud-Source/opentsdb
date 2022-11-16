@@ -200,7 +200,7 @@ func TestParseRateOptions(t *testing.T) {
 			t.Errorf("error parsing query %s: %s", q.query, err)
 			continue
 		}
-		if q.rate != parsedQuery.RateOptions {
+		if q.rate != *parsedQuery.RateOptions {
 			t.Errorf("for query %s expected parsed rate options %+v, got: %+v", q.query, q.rate, parsedQuery.RateOptions)
 		}
 	}
@@ -304,7 +304,7 @@ func TestQueryString(t *testing.T) {
 				Aggregator: "avg",
 				Metric:     "test.metric",
 				Rate:       true,
-				RateOptions: RateOptions{
+				RateOptions: &RateOptions{
 					Counter:    true,
 					CounterMax: 1,
 					ResetValue: 2,
@@ -317,7 +317,7 @@ func TestQueryString(t *testing.T) {
 				Aggregator: "avg",
 				Metric:     "test.metric",
 				Rate:       true,
-				RateOptions: RateOptions{
+				RateOptions: &RateOptions{
 					Counter:    true,
 					CounterMax: 1,
 				},
@@ -329,7 +329,7 @@ func TestQueryString(t *testing.T) {
 				Aggregator: "avg",
 				Metric:     "test.metric",
 				Rate:       true,
-				RateOptions: RateOptions{
+				RateOptions: &RateOptions{
 					Counter: true,
 				},
 			},
@@ -340,7 +340,7 @@ func TestQueryString(t *testing.T) {
 				Aggregator: "avg",
 				Metric:     "test.metric",
 				Rate:       true,
-				RateOptions: RateOptions{
+				RateOptions: &RateOptions{
 					CounterMax: 1,
 					ResetValue: 2,
 				},
@@ -351,7 +351,7 @@ func TestQueryString(t *testing.T) {
 			Query{
 				Aggregator: "avg",
 				Metric:     "test.metric",
-				RateOptions: RateOptions{
+				RateOptions: &RateOptions{
 					Counter:    true,
 					CounterMax: 1,
 					ResetValue: 2,
@@ -364,7 +364,7 @@ func TestQueryString(t *testing.T) {
 				Aggregator: "avg",
 				Metric:     "test.metric",
 				Rate:       true,
-				RateOptions: RateOptions{
+				RateOptions: &RateOptions{
 					Counter:    true,
 					DropResets: true,
 				},

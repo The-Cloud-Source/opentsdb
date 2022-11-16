@@ -15,9 +15,11 @@ func TestJSON(t *testing.T) {
 	dec := json.NewDecoder(bytes.NewReader(q))
 	err := dec.Decode(&r)
 
-	t.Errorf("||| %s", r.String())
-	t.Errorf("||| %s", r.Encode())
-	t.Errorf("||| %v", err)
+	if err != nil || r.String() != `m=sum:15s-avg:system.cpu.percent{host=*}&start=2021/10/10-10:11:49` {
+		t.Errorf("||| %s", r.String())
+		t.Errorf("||| %s", r.Encode())
+		t.Errorf("||| %v", err)
+	}
 
 }
 
@@ -34,16 +36,16 @@ func TestM(t *testing.T) {
 	dec := json.NewDecoder(bytes.NewReader(in1))
 	err := dec.Decode(&r)
 
-	t.Errorf("%s %s", r.Start, r.End)
-	t.Errorf("%v", err)
+	t.Logf("%g %g", r.Start, r.End)
+	t.Logf("%v", err)
 
 	r2 := &Request{}
 	r2.Start = "1629380400000"
 	r2.End = "1629385200000"
-	t.Errorf("%v %v", r2.Start, r2.End)
+	t.Logf("%v %v", r2.Start, r2.End)
 
 	b, err := json.Marshal(r2)
-	t.Errorf("%v %v", string(b), err)
+	t.Logf("%v %v", string(b), err)
 
 	resp := &Response{
 		Metric: "metric.metric",
@@ -60,7 +62,7 @@ func TestM(t *testing.T) {
 	dec1 := json.NewDecoder(bytes.NewReader(b2))
 	err1 := dec1.Decode(&res)
 
-	t.Errorf("%v", *res)
-	t.Errorf("%v", err1)
+	t.Logf("%v", *res)
+	t.Logf("%v", err1)
 
 }
