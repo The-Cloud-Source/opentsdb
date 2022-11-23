@@ -43,11 +43,11 @@ type Point float64
 // Response is a query response:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#response.
 type Response struct {
-	Metric        string          `json:"metric"`
-	Tags          TagSet          `json:"tags"`
-	AggregateTags []string        `json:"aggregateTags"`
-	Query         Query           `json:"query,omitempty"`
-	DPS           map[Epoch]Point `json:"dps"`
+	Metric        string          `json:"metric" yaml:"metric"`
+	Tags          TagSet          `json:"tags" yaml:"tags"`
+	AggregateTags []string        `json:"aggregateTags" yaml:"aggregateTags"`
+	Query         Query           `json:"query,omitempty" yaml:"query,omitempty"`
+	DPS           map[Epoch]Point `json:"dps" yaml:"dps"`
 
 	//missing "annotations": [...]
 	//missing "annotations": [...]
@@ -72,10 +72,10 @@ func (r *Response) Copy() *Response {
 // DataPoint is a data point for the /api/put route:
 // http://opentsdb.net/docs/build/html/api_http/put.html#example-single-data-point-put.
 type DataPoint struct {
-	Metric    string      `json:"metric"`
-	Timestamp Epoch       `json:"timestamp"`
-	Value     interface{} `json:"value"`
-	Tags      TagSet      `json:"tags"`
+	Metric    string      `json:"metric" yaml:"metric"`
+	Timestamp Epoch       `json:"timestamp" yaml:"timestamp"`
+	Value     interface{} `json:"value" yaml:"value"`
+	Tags      TagSet      `json:"tags" yaml:"tags"`
 }
 
 // MarshalJSON verifies d is valid and converts it to JSON.
@@ -84,10 +84,10 @@ func (d *DataPoint) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 	return json.Marshal(struct {
-		Metric    string      `json:"metric"`
-		Timestamp Epoch       `json:"timestamp"`
-		Value     interface{} `json:"value"`
-		Tags      TagSet      `json:"tags"`
+		Metric    string      `json:"metric" yaml:"metric"`
+		Timestamp Epoch       `json:"timestamp" yaml:"timestamp"`
+		Value     interface{} `json:"value" yaml:"value"`
+		Tags      TagSet      `json:"tags" yaml:"tags"`
 	}{
 		d.Metric,
 		d.Timestamp,
@@ -357,19 +357,19 @@ func MustReplace(s, replacement string) string {
 // Request holds query objects:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#requests.
 type Request struct {
-	Start             interface{} `json:"start"`
-	End               interface{} `json:"end,omitempty"`
-	Queries           []*Query    `json:"queries"`
-	NoAnnotations     bool        `json:"noAnnotations,omitempty"`
-	GlobalAnnotations bool        `json:"globalAnnotations,omitempty"`
-	MsResolution      bool        `json:"msResolution,omitempty"`
-	ShowTSUIDs        bool        `json:"showTSUIDs,omitempty"`
-	ShowSummary       bool        `json:"showSummary,omitempty"`
-	ShowStats         bool        `json:"showStats,omitempty"`
-	ShowQuery         bool        `json:"showQuery,omitempty"`
-	Delete            bool        `json:"delete,omitempty"`
-	UseCalendar       bool        `json:"useCalendar,omitempty"`
-	Timezone          string      `json:"timezone,omitempty"`
+	Start             interface{} `json:"start" yaml:"start"`
+	End               interface{} `json:"end,omitempty" yaml:"end,omitempty"`
+	Queries           []*Query    `json:"queries" yaml:"queries"`
+	NoAnnotations     bool        `json:"noAnnotations,omitempty" yaml:"noAnnotations,omitempty"`
+	GlobalAnnotations bool        `json:"globalAnnotations,omitempty" yaml:"globalAnnotations,omitempty"`
+	MsResolution      bool        `json:"msResolution,omitempty" yaml:"msResolution,omitempty"`
+	ShowTSUIDs        bool        `json:"showTSUIDs,omitempty" yaml:"showTSUIDs,omitempty"`
+	ShowSummary       bool        `json:"showSummary,omitempty" yaml:"showSummary,omitempty"`
+	ShowStats         bool        `json:"showStats,omitempty" yaml:"showStats,omitempty"`
+	ShowQuery         bool        `json:"showQuery,omitempty" yaml:"showQuery,omitempty"`
+	Delete            bool        `json:"delete,omitempty" yaml:"delete,omitempty"`
+	UseCalendar       bool        `json:"useCalendar,omitempty" yaml:"useCalendar,omitempty"`
+	Timezone          string      `json:"timezone,omitempty" yaml:"timezone,omitempty"`
 }
 
 // RequestFromJSON creates a new request from JSON.
@@ -386,24 +386,24 @@ func RequestFromJSON(b []byte) (*Request, error) {
 // Query is a query for a request:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#sub-queries.
 type Query struct {
-	Metric       string       `json:"metric"`
-	Aggregator   string       `json:"aggregator"`
-	Rate         bool         `json:"rate,omitempty"`
-	RateOptions  *RateOptions `json:"rateOptions,omitempty"`
-	Downsample   string       `json:"downsample,omitempty"`
-	Tags         TagSet       `json:"tags,omitempty"`
-	Filters      Filters      `json:"filters,omitempty"`
-	ExplicitTags bool         `json:"explicitTags,omitempty"`
-	GroupByTags  TagSet       `json:"-"`
+	Metric       string       `json:"metric" yaml:"metric"`
+	Aggregator   string       `json:"aggregator" yaml:"aggregator"`
+	Rate         bool         `json:"rate,omitempty" yaml:"rate,omitempty"`
+	RateOptions  *RateOptions `json:"rateOptions,omitempty" yaml:"rateOptions,omitempty"`
+	Downsample   string       `json:"downsample,omitempty" yaml:"downsample,omitempty"`
+	Tags         TagSet       `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Filters      Filters      `json:"filters,omitempty" yaml:"filters,omitempty"`
+	ExplicitTags bool         `json:"explicitTags,omitempty" yaml:"explicitTags,omitempty"`
+	GroupByTags  TagSet       `json:"-" yaml:"-"`
 	//percentiles
 	//rollupUsage
 }
 
 type Filter struct {
-	Type    string `json:"type"`
-	TagK    string `json:"tagk"`
-	Filter  string `json:"filter"`
-	GroupBy bool   `json:"groupBy"`
+	Type    string `json:"type" yaml:"type"`
+	TagK    string `json:"tagk" yaml:"tagk"`
+	Filter  string `json:"filter" yaml:"filter"`
+	GroupBy bool   `json:"groupBy" yaml:"groupBy"`
 }
 
 func (f Filter) String() string {
@@ -447,10 +447,10 @@ func (filters Filters) String() string {
 
 // RateOptions are rate options for a query.
 type RateOptions struct {
-	Counter    bool  `json:"counter,omitempty"`
-	CounterMax int64 `json:"counterMax,omitempty"`
-	ResetValue int64 `json:"resetValue,omitempty"`
-	DropResets bool  `json:"dropResets,omitempty"`
+	Counter    bool  `json:"counter,omitempty" yaml:"counter,omitempty"`
+	CounterMax int64 `json:"counterMax,omitempty" yaml:"counterMax,omitempty"`
+	ResetValue int64 `json:"resetValue,omitempty" yaml:"resetValue,omitempty"`
+	DropResets bool  `json:"dropResets,omitempty" yaml:"dropResets,omitempty"`
 }
 
 // ParseRequest parses OpenTSDB requests of the form: start=1h-ago&m=avg:cpu.
@@ -1067,12 +1067,12 @@ func (r *Request) QueryResponse(host string, client *http.Client) (*http.Respons
 
 // RequestError is the error structure for request errors.
 type RequestError struct {
-	Request string
+	Request string `json:"request" yaml:"request"`
 	Err     struct {
-		Code    int    `json:"code"`
-		Message string `json:"message"`
-		Details string `json:"details"`
-	} `json:"error"`
+		Code    int    `json:"code" yaml:"code"`
+		Message string `json:"message" yaml:"message"`
+		Details string `json:"details" yaml:"ddetails"`
+	} `json:"error" yaml:"error"`
 }
 
 func (r *RequestError) Error() string {
