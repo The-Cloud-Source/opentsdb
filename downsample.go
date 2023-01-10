@@ -49,11 +49,16 @@ func (r *Request) EstimateDPS() (dps int64, err error) {
 		return dps, err
 	}
 
-	downsample, err := r.GetMinDownsample()
-	if err != nil {
-		return dps, err
+	for _, q := range r.Queries {
+		if q.Downsample == "" {
+			dps += int64(duration / Duration(10*time.Second))
+		} else {
+			ds, err := ParseDownsample(q.Downsample)
+			if err != nil {
+				return dps, err
+			}
+			dps += int64(duration / ds)
+		}
 	}
-
-	dps = int64(duration / downsample)
 	return dps, nil
 }
