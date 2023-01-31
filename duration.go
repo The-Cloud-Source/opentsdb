@@ -187,6 +187,10 @@ func (d Duration) Seconds() float64 {
 	return time.Duration(d).Seconds()
 }
 
+func (d Duration) SecondsInt64() int64 {
+	return int64(time.Duration(d).Seconds())
+}
+
 func (d *Duration) UnmarshalText(text []byte) error {
 	duration, err := ParseDuration(string(text))
 	if err != nil {

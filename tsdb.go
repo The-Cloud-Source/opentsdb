@@ -465,6 +465,10 @@ func ParseRequest(req string, version Version) (*Request, error) {
 		return nil, fmt.Errorf("opentsdb: missing start: %s", req)
 	}
 	r.Start = TimeSpec(s)
+
+	if e := v.Get("end"); e != "" {
+		r.End = TimeSpec(e)
+	}
 	for _, m := range v["m"] {
 		q, err := ParseQuery(m, version)
 		if err != nil {

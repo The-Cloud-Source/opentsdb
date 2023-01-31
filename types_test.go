@@ -6,6 +6,30 @@ import (
 	"testing"
 )
 
+func TestTimeDuration(t *testing.T) {
+
+	q := "start=2023/01/30-18:00:00&end=2023/01/30-23:00:00&m=avg:1h-max:system.wds.prd.cpu.percent{cluster=*}"
+	tsdQuery, err := ParseRequest(q, Version2_4)
+	if err != nil {
+		t.Errorf("%v %v", tsdQuery, err)
+	}
+
+	if tsdQuery.Start != TimeSpec("2023/01/30-18:00:00") {
+		t.Errorf("start=%v", tsdQuery.Start)
+	}
+	if tsdQuery.End != TimeSpec("2023/01/30-23:00:00") {
+		t.Errorf("end=%v", tsdQuery.End)
+	}
+
+	duration, err := GetDuration(tsdQuery)
+	if err != nil || true {
+		t.Errorf("%v %v", duration.SecondsInt64(), err)
+	}
+	if duration.SecondsInt64() != 18000 {
+		t.Errorf("want 18000, got %v", duration.SecondsInt64())
+	}
+}
+
 func TestJSON(t *testing.T) {
 
 	var q = []byte(
