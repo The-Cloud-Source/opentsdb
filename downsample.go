@@ -37,7 +37,7 @@ func (r *Request) GetMinDownsample() (Duration, error) {
 	}
 
 	if ds == maxDuration {
-		return Duration(10 * time.Second), nil
+		return Duration(1 * time.Second), nil
 	}
 	return ds, nil
 }
@@ -49,15 +49,16 @@ func (r *Request) EstimateDPS() (dps int64, err error) {
 		return dps, err
 	}
 
+	d := duration.SecondsInt64()
 	for _, q := range r.Queries {
 		if q.Downsample == "" {
-			dps += int64(duration / Duration(10*time.Second))
+			dps += d // 1 dp per sec
 		} else {
 			ds, err := ParseDownsample(q.Downsample)
 			if err != nil {
 				return dps, err
 			}
-			dps += int64(duration / ds)
+			dps += int64(d / ds.SecondsInt64())
 		}
 	}
 	return dps, nil
