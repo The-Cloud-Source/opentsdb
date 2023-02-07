@@ -58,7 +58,7 @@ func (r *Request) EstimateDPS() (dps int64, err error) {
 			if err != nil {
 				return dps, err
 			}
-			dps += int64(d / ds.SecondsInt64())
+			dps += int64(float64(d) / ds.Seconds())
 		}
 	}
 	return dps, nil

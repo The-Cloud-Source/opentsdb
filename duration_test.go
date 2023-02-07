@@ -6,6 +6,15 @@ import (
 	"testing"
 )
 
+func TestDownsample(t *testing.T) {
+
+	ds, err := ParseDownsample("500ms-avg")
+	if err != nil {
+		t.Errorf("parse failed - %v", err)
+	}
+	t.Logf("%f %d", ds.Seconds(), ds.SecondsInt64())
+}
+
 func TestDuration(t *testing.T) {
 
 	var q = []byte(
