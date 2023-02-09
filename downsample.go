@@ -28,10 +28,14 @@ func (r *Request) GetMinDownsample() (Duration, error) {
 	}
 
 	for _, q := range r.Queries {
-		tmp, err := ParseDownsample(q.Downsample)
-		if err == nil {
-			if tmp < ds {
-				ds = tmp
+		if q.Downsample == "" {
+			ds = 1 * Second
+		} else {
+			tmp, err := ParseDownsample(q.Downsample)
+			if err == nil {
+				if tmp < ds {
+					ds = tmp
+				}
 			}
 		}
 	}

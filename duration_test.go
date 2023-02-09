@@ -13,6 +13,15 @@ func TestDownsample(t *testing.T) {
 		t.Errorf("parse failed - %v", err)
 	}
 	t.Logf("%f %d", ds.Seconds(), ds.SecondsInt64())
+
+	/*
+		ds2, err := ParseDownsample("")
+		if err != nil {
+			t.Errorf("parse failed - %v", err)
+		}
+		t.Logf("%f %d", ds2.Seconds(), ds2.SecondsInt64())
+	*/
+
 }
 
 func TestDuration(t *testing.T) {
