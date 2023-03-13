@@ -483,8 +483,25 @@ func ParseRequest(req string, version Version) (*Request, error) {
 }
 
 var qRE2_1 = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<downsample>\w+-\w+):)?(?:(?P<rate>rate.*):)?(?P<metric>[\w./-]+)(?:\{([\w./,=*-|]+)\})?$`)
-var qRE2_2a = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<rate>rate.*):)?(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?(?P<metric>[\w./-]+)(?:\{([^}]+)?\})?(?:\{([^}]+)?\})?$`)
-var qRE2_2b = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?(?:(?P<rate>rate.*):)?(?P<metric>[\w./-]+)(?:\{([^}]+)?\})?(?:\{([^}]+)?\})?$`)
+var qRE2_2a = regexp.MustCompile(
+	`` +
+		`^(?P<aggregator>\w+):` + // aggregation
+		`(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?` + // downsampling agg
+		`(?:(?P<rate>rate(?:[{].*[}])?):)?` + // rate options
+		`(?P<metric>[\w./-]+)` + //metric name
+		`(?:\{([^}]+)?\})?` + // groupping tags
+		`(?:\{([^}]+)?\})?$` + // non groupping tags
+		``)
+
+var qRE2_2b = regexp.MustCompile(
+	`` +
+		`^(?P<aggregator>\w+):` + // aggregation
+		`(?:(?P<rate>rate(?:[{].*[}])?):)?` + // rate options
+		`(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?` + // downsampling agg
+		`(?P<metric>[\w./-]+)` + //metric name
+		`(?:\{([^}]+)?\})?` + // groupping tags
+		`(?:\{([^}]+)?\})?$` + // non groupping tags
+		``)
 
 // ParseQuery parses OpenTSDB queries of the form: avg:rate:cpu{k=v}. Validation
 // errors will be returned along with a valid Query.
@@ -496,18 +513,18 @@ func ParseQuery(query string, version Version) (q *Query, err error) {
 	}
 
 	m := regExp.FindStringSubmatch(query)
-	if m == nil && version.FilterSupport() {
+	if len(m) < 1 && version.FilterSupport() {
 		regExp = qRE2_2b
 		m = regExp.FindStringSubmatch(query)
 	}
 
-	if m == nil {
+	if m == nil || len(m) < 1 {
 		return nil, fmt.Errorf("opentsdb: bad query format: %s", query)
 	}
 
 	result := make(map[string]string)
 	for i, name := range regExp.SubexpNames() {
-		if i != 0 {
+		if i != 0 && i < len(m) {
 			result[name] = m[i]
 		}
 	}
