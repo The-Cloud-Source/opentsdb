@@ -483,7 +483,8 @@ func ParseRequest(req string, version Version) (*Request, error) {
 }
 
 var qRE2_1 = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<downsample>\w+-\w+):)?(?:(?P<rate>rate.*):)?(?P<metric>[\w./-]+)(?:\{([\w./,=*-|]+)\})?$`)
-var qRE2_2 = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?(?:(?P<rate>rate.*):)?(?P<metric>[\w./-]+)(?:\{([^}]+)?\})?(?:\{([^}]+)?\})?$`)
+var qRE2_2a = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<rate>rate.*):)?(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?(?P<metric>[\w./-]+)(?:\{([^}]+)?\})?(?:\{([^}]+)?\})?$`)
+var qRE2_2b = regexp.MustCompile(`^(?P<aggregator>\w+):(?:(?P<downsample>\w+-\w+(?:-(?:\w+))?):)?(?:(?P<rate>rate.*):)?(?P<metric>[\w./-]+)(?:\{([^}]+)?\})?(?:\{([^}]+)?\})?$`)
 
 // ParseQuery parses OpenTSDB queries of the form: avg:rate:cpu{k=v}. Validation
 // errors will be returned along with a valid Query.
@@ -491,10 +492,14 @@ func ParseQuery(query string, version Version) (q *Query, err error) {
 	var regExp = qRE2_1
 	q = new(Query)
 	if version.FilterSupport() {
-		regExp = qRE2_2
+		regExp = qRE2_2a
 	}
 
 	m := regExp.FindStringSubmatch(query)
+	if m == nil && version.FilterSupport() {
+		regExp = qRE2_2b
+		m = regExp.FindStringSubmatch(query)
+	}
 
 	if m == nil {
 		return nil, fmt.Errorf("opentsdb: bad query format: %s", query)
