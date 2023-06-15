@@ -28,7 +28,7 @@ func (t *TimeSpec) UnmarshalJSON(data []byte) error {
 }
 
 func (t TimeSpec) MarshalJSON() ([]byte, error) {
-	return []byte(t), nil
+	return []byte(`"`+t+`"`), nil
 }
 
 func (v TimeSpec) CanonicalTimeString(defaultNow bool) (string, error) {
