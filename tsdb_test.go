@@ -10,6 +10,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestRequestFromJson(t *testing.T) {
+	js := []byte(`{"start":"120s-ago","queries":[{"metric":"platform.rts.kpis.TotalFailures","aggregator":"sum","rate":true,"filters":[{"type":"literal_or","tagk":"name","filter":"Retail.v1.0","groupBy":true}]}]}`)
+
+	x, err := RequestFromJSON(js)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_ = x
+
+}
+
 func TestClean(t *testing.T) {
 	clean := "aoeSNVT152-./_"
 	if c, err := Clean(clean); c != clean {
@@ -447,7 +459,7 @@ func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 	return f(req), nil
 }
 
-//NewTestClient returns *http.Client with Transport replaced to avoid making real calls
+// NewTestClient returns *http.Client with Transport replaced to avoid making real calls
 func NewTestClient(fn RoundTripFunc) *http.Client {
 	return &http.Client{
 		Transport: RoundTripFunc(fn),

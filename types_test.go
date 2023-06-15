@@ -6,6 +6,17 @@ import (
 	"testing"
 )
 
+func TestRequestFromJSON(t *testing.T) {
+	js := []byte(`{"start":"120s-ago","queries":[{"metric":"platform.rts.kpis.TotalFailures","aggregator":"sum","rate":true,"filters":[{"type":"literal_or","tagk":"name","filter":"Retail.v1.0","groupBy":true}]}]}`)
+
+	x, err := RequestFromJSON(js)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("%v", x)
+}
+
 func TestTimeDuration(t *testing.T) {
 
 	q := "start=2023/01/30-18:00:00&end=2023/01/30-23:00:00&m=avg:1h-max:system.wds.prd.cpu.percent{cluster=*}"
@@ -22,7 +33,7 @@ func TestTimeDuration(t *testing.T) {
 	}
 
 	duration, err := GetDuration(tsdQuery)
-	if err != nil || true {
+	if err != nil {
 		t.Errorf("%v %v", duration.SecondsInt64(), err)
 	}
 	if duration.SecondsInt64() != 18000 {
@@ -79,7 +90,9 @@ func TestM(t *testing.T) {
 		},
 	}
 	b2, err := json.Marshal(resp)
-	t.Errorf("%v %v", string(b2), err)
+	if err != nil {
+		t.Errorf("%v %v", string(b2), err)
+	}
 
 	//in := []byte(`{"metric":"","tags":null,"aggregateTags":null,"query":{"metric":"","aggregator":"","rateOptions":{}},"dps":{"123":1.1}}`)
 	res := &Request{}
