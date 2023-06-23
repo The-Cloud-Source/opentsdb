@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -18,8 +19,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 // ResponseSet is a Multi-Set Response:
@@ -336,12 +335,14 @@ func Replace(s, replacement string) (string, error) {
 	// For the moment I prefer to constructing like this to holding onto a global instance
 	val, err := NewOpenTsdbNameProcessor(replacement)
 	if err != nil {
-		return "", errors.Wrap(err, "Failed to create name processor")
+		//return "", errors.Wrap(err, "Failed to create name processor")
+		return "", fmt.Errorf("Failed to create name processor: %w", err)
 	}
 
 	result, err := val.FormatName(s)
 	if err != nil {
-		return "", errors.Wrap(err, "Failed to format string")
+		//return "", errors.Wrap(err, "Failed to format string")
+		return "", fmt.Errorf("Failed to format string: %w", err)
 	}
 
 	return result, nil

@@ -1,11 +1,11 @@
 package opentsdb
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"unicode"
 
-	"github.com/pkg/errors"
 	"github.com/the-cloud-source/opentsdb/name"
 )
 
@@ -21,7 +21,8 @@ func NewOpenTsdbNameProcessor(invalidRuneReplacement string) (name.RuneLevelProc
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to construct basic validator")
+		//return nil, errors.Wrap(err, "Failed to construct basic validator")
+		return nil, fmt.Errorf("Failed to construct basic validator: %w", err)
 	}
 
 	result := &openTsdbNameConfig{invalidRuneReplacement: invalidRuneReplacement, basicValidator: bv}
@@ -53,7 +54,8 @@ func (c *openTsdbNameConfig) FormatName(name string) (string, error) {
 		}
 
 		if err != nil {
-			return "", errors.Wrap(err, fmt.Sprintf("Failed to format '%s'", name))
+			//return "", errors.Wrap(err, fmt.Sprintf("Failed to format '%s'", name))
+			return "", fmt.Errorf("Failed to format '%s': %w", name, err)
 		}
 
 		lastRune = r
