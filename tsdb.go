@@ -1086,12 +1086,6 @@ func (r *Request) QueryResponse(host string, client *http.Client) (*http.Respons
 		if err := json.NewDecoder(bytes.NewBuffer(body)).Decode(&e); err == nil {
 			return nil, &e
 		}
-		//s := fmt.Sprintf("opentsdb: %s", resp.Status)
-		//if len(body) > 0 {
-		//	s = fmt.Sprintf("%s: %s", s, body)
-		//}
-		//return nil, errors.New(s)
-
 		te := &TransportError{Code: resp.StatusCode}
 		if len(body) > 0 {
 			te.Body = body
@@ -1122,7 +1116,7 @@ type RequestError struct {
 }
 
 func (r *RequestError) Error() string {
-	return fmt.Sprintf("opentsdb: status=%d req='%s' msg='%s'", r.Err.Code, r.Request, r.Err.Message)
+	return fmt.Sprintf("opentsdb: status=%d req='%s' msg=%s", r.Err.Code, r.Request, r.Err.Message)
 }
 
 // Context is the interface for querying an OpenTSDB server.
