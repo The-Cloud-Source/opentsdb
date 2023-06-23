@@ -1055,6 +1055,8 @@ func (r *Request) QueryResponse(host string, client *http.Client) (*http.Respons
 			u.Path = pu.Path
 		}
 	}
+	u.ForceQuery = true
+	u.RawQuery = pu.RawQuery
 
 	b, err := json.Marshal(&r)
 	if err != nil {
