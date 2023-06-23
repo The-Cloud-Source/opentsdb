@@ -14,6 +14,7 @@ func TestRequestFromJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	t.Logf("%v", x.Start)
 	t.Logf("%v", x)
 }
 

@@ -40,14 +40,16 @@ type Epoch int64
 // Point is the Response data point type.
 type Point float64
 
+type DPmap map[Epoch]Point
+
 // Response is a query response:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#response.
 type Response struct {
-	Metric        string          `json:"metric" yaml:"metric"`
-	Tags          TagSet          `json:"tags" yaml:"tags"`
-	AggregateTags []string        `json:"aggregateTags" yaml:"aggregateTags"`
-	Query         Query           `json:"query,omitempty" yaml:"query,omitempty"`
-	DPS           map[Epoch]Point `json:"dps" yaml:"dps"`
+	Metric        string   `json:"metric" yaml:"metric"`
+	Tags          TagSet   `json:"tags" yaml:"tags"`
+	AggregateTags []string `json:"aggregateTags" yaml:"aggregateTags"`
+	Query         Query    `json:"query,omitempty" yaml:"query,omitempty"`
+	DPS           DPmap    `json:"dps" yaml:"dps"`
 
 	//missing "annotations": [...]
 	//missing "annotations": [...]
@@ -62,7 +64,7 @@ func (r *Response) Copy() *Response {
 	newR.Metric = r.Metric
 	newR.Tags = r.Tags.Copy()
 	copy(newR.AggregateTags, r.AggregateTags)
-	newR.DPS = map[Epoch]Point{}
+	newR.DPS = DPmap{}
 	for k, v := range r.DPS {
 		newR.DPS[k] = v
 	}
@@ -1229,4 +1231,13 @@ func FilterTags(r *Request, tr ResponseSet) {
 			delete(resp.Tags, k)
 		}
 	}
+}
+
+func (dps DPmap) GetSortedTimes() []Epoch {
+	times := make([]Epoch, 0, len(dps))
+	for k := range dps {
+		times = append(times, k)
+	}
+	sort.Slice(times, func(i, j int) bool { return times[i] < times[j] })
+	return times
 }
