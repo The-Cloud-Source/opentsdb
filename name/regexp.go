@@ -1,7 +1,6 @@
 package name
 
 import (
-	"errors"
 	"regexp"
 )
 
@@ -12,7 +11,7 @@ type regexpValidationConfig struct {
 // NewRegexpValidator constructs a new Validator which verifies that a name matches a specific regular expression
 func NewRegexpValidator(validPattern string) (Validator, error) {
 	if len(validPattern) == 0 {
-		return nil, errors.New("no validPattern provided")
+		return nil, ErrInvalidPatern
 	}
 
 	matcher, err := regexp.Compile(validPattern)

@@ -1,7 +1,5 @@
 package name
 
-import "errors"
-
 type basicValidationConfig struct {
 	isEmptyValid     bool
 	isValidRuneCheck func(rune) bool
@@ -11,7 +9,7 @@ type basicValidationConfig struct {
 // runes which fail a basic validation check
 func NewBasicValidator(isEmptyValid bool, isValidRuneCheck func(rune) bool) (RuneLevelValidator, error) {
 	if isValidRuneCheck == nil {
-		return nil, errors.New("no isValidRuneCheck provided")
+		return nil, ErrInvalidRuneCheck
 	}
 
 	result := &basicValidationConfig{isEmptyValid: isEmptyValid, isValidRuneCheck: isValidRuneCheck}

@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -946,7 +945,7 @@ func (r *Request) GetEnd() (TimeSpec, error) {
 func GetDuration(r *Request) (Duration, error) {
 	var t Duration
 	if r.Start == "" {
-		return t, errors.New("start time must be provided")
+		return t, ErrMissingStartTime
 	}
 	start, err := ParseTime(r.Start)
 	if err != nil {
@@ -968,7 +967,7 @@ func GetDuration(r *Request) (Duration, error) {
 // AutoDownsample sets the avg downsample aggregator to produce l points.
 func (r *Request) AutoDownsample(l int) error {
 	if l == 0 {
-		return errors.New("opentsdb: target length must be > 0")
+		return ErrInvalidAutoDownsample
 	}
 	cd, err := GetDuration(r)
 	if err != nil {
@@ -1087,13 +1086,29 @@ func (r *Request) QueryResponse(host string, client *http.Client) (*http.Respons
 		if err := json.NewDecoder(bytes.NewBuffer(body)).Decode(&e); err == nil {
 			return nil, &e
 		}
-		s := fmt.Sprintf("opentsdb: %s", resp.Status)
+		//s := fmt.Sprintf("opentsdb: %s", resp.Status)
+		//if len(body) > 0 {
+		//	s = fmt.Sprintf("%s: %s", s, body)
+		//}
+		//return nil, errors.New(s)
+
+		te := &TransportError{Code: resp.StatusCode}
 		if len(body) > 0 {
-			s = fmt.Sprintf("%s: %s", s, body)
+			te.Body = body
 		}
-		return nil, errors.New(s)
+		return nil, te
 	}
 	return resp, nil
+}
+
+// TransportError is the error structure for errors
+type TransportError struct {
+	Code int    `json:"code" yaml:"code"`
+	Body []byte `json:"body" yaml:"body"`
+}
+
+func (r *TransportError) Error() string {
+	return fmt.Sprintf("opentsdb: status=%d", r.Code)
 }
 
 // RequestError is the error structure for request errors.
@@ -1102,12 +1117,12 @@ type RequestError struct {
 	Err     struct {
 		Code    int    `json:"code" yaml:"code"`
 		Message string `json:"message" yaml:"message"`
-		Details string `json:"details" yaml:"ddetails"`
+		Details string `json:"details" yaml:"details"`
 	} `json:"error" yaml:"error"`
 }
 
 func (r *RequestError) Error() string {
-	return fmt.Sprintf("opentsdb: %s: %s", r.Request, r.Err.Message)
+	return fmt.Sprintf("opentsdb: status=%d req='%s' msg='%s'", r.Err.Code, r.Request, r.Err.Message)
 }
 
 // Context is the interface for querying an OpenTSDB server.

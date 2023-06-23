@@ -1,7 +1,6 @@
 package opentsdb
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 	"unicode"
@@ -63,7 +62,7 @@ func (c *openTsdbNameConfig) FormatName(name string) (string, error) {
 
 	result := sb.String()
 	if result == "" {
-		return "", errors.New("Name left empty after formatting")
+		return "", ErrNameLeftEmpty
 	}
 
 	return result, nil

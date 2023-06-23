@@ -126,8 +126,6 @@ func ParseDuration(s string) (Duration, error) {
 	return Duration(f), nil
 }
 
-var errLeadingInt = errors.New("time: bad [0-9]*") // never printed
-
 // leadingInt consumes the leading [0-9]* from s.
 func leadingInt(s string) (x int64, rem string, err error) {
 	i := 0
@@ -138,7 +136,7 @@ func leadingInt(s string) (x int64, rem string, err error) {
 		}
 		if x >= (1<<63-10)/10 {
 			// overflow
-			return 0, "", errLeadingInt
+			return 0, "", ErrLeadingInt
 		}
 		x = x*10 + int64(c) - '0'
 	}
