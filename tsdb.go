@@ -3,7 +3,6 @@ package opentsdb
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -1019,22 +1018,6 @@ func (r *Request) Query(host string) (ResponseSet, error) {
 		return nil, err
 	}
 	return tr, nil
-}
-
-// DefaultClient is the default http client for requests.
-var DefaultClient = &http.Client{
-	Transport: &http.Transport{
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
-	},
-	Timeout: time.Minute,
-}
-
-var userAgent = ""
-
-func UserAgentSet(ua string) {
-	userAgent = ua
 }
 
 // QueryResponse performs a v2 OpenTSDB request to the given host. host should
