@@ -397,7 +397,7 @@ type Query struct {
 	ExplicitTags bool         `json:"explicitTags" yaml:"explicitTags"`
 	TSUIDs       []string     `json:"tsuids" yaml:"tsuids"`
 	GroupByTags  TagSet       `json:"-" yaml:"-"`
-	//Index                int          `json:"index" yaml:"index"`
+	Index        int          `json:"index" yaml:"index"`
 	//HistogramQuery       bool         `json:"histogramQuery" yaml:"histogramQuery"`
 	//PreAggregate         bool         `json:"preAggregate" yaml:"preAggregate"`
 	//ShowHistogramBuckets bool         `json:"showHistogramBuckets" yaml:"showHistogramBuckets"`
