@@ -389,13 +389,19 @@ func RequestFromJSON(b []byte) (*Request, error) {
 type Query struct {
 	Metric       string       `json:"metric" yaml:"metric"`
 	Aggregator   string       `json:"aggregator" yaml:"aggregator"`
-	Rate         bool         `json:"rate,omitempty" yaml:"rate,omitempty"`
-	RateOptions  *RateOptions `json:"rateOptions,omitempty" yaml:"rateOptions,omitempty"`
+	Rate         bool         `json:"rate" yaml:"rate"`
+	RateOptions  *RateOptions `json:"rateOptions" yaml:"rateOptions"`
 	Downsample   string       `json:"downsample,omitempty" yaml:"downsample,omitempty"`
 	Tags         TagSet       `json:"tags,omitempty" yaml:"tags,omitempty"`
 	Filters      Filters      `json:"filters,omitempty" yaml:"filters,omitempty"`
-	ExplicitTags bool         `json:"explicitTags,omitempty" yaml:"explicitTags,omitempty"`
+	ExplicitTags bool         `json:"explicitTags" yaml:"explicitTags"`
+	TSUIDs       []string     `json:"tsuids" yaml:"tsuids"`
 	GroupByTags  TagSet       `json:"-" yaml:"-"`
+	//Index                int          `json:"index" yaml:"index"`
+	//HistogramQuery       bool         `json:"histogramQuery" yaml:"histogramQuery"`
+	//PreAggregate         bool         `json:"preAggregate" yaml:"preAggregate"`
+	//ShowHistogramBuckets bool         `json:"showHistogramBuckets" yaml:"showHistogramBuckets"`
+	//"rollupUsage"
 	//percentiles
 	//rollupUsage
 }
