@@ -1026,9 +1026,13 @@ func (r *Request) Query(host string) (ResponseSet, error) {
 	return tr, nil
 }
 
+func (r *Request) QueryResponse(host string, client *http.Client) (*http.Response, error) {
+	return r.QueryResponseWithHeaders(host, client, nil)
+}
+
 // QueryResponse performs a v2 OpenTSDB request to the given host. host should
 // be of the form hostname:port. A nil client uses DefaultClient.
-func (r *Request) QueryResponse(host string, client *http.Client) (*http.Response, error) {
+func (r *Request) QueryResponseWithHeaders(host string, client *http.Client, headers http.Header) (*http.Response, error) {
 
 	u := url.URL{
 		Scheme: "http",
@@ -1062,6 +1066,12 @@ func (r *Request) QueryResponse(host string, client *http.Client) (*http.Respons
 	req.Header.Add("Content-Type", "application/json")
 	if userAgent != "" {
 		req.Header.Add("User-Agent", userAgent)
+	}
+
+	for k, a := range headers {
+		for _, v := range a {
+			req.Header.Add(k, v)
+		}
 	}
 
 	resp, err := client.Do(req)

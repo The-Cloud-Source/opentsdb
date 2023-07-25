@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"math"
+	"net/http"
 )
 
 // SynContext is a context that enables limiting response size and filtering tags
@@ -57,6 +58,10 @@ func (ctx *MultiContext) AddContext(v *SynContext) *MultiContext {
 }
 
 func (ctx *SynContext) Query(r *Request) (ResponseSet, error) {
+	return ctx.QueryWithHeaders(r, nil)
+}
+
+func (ctx *SynContext) QueryWithHeaders(r *Request, headers http.Header) (ResponseSet, error) {
 
 	tr := ResponseSet{}
 
@@ -83,6 +88,10 @@ func (ctx *SynContext) Query(r *Request) (ResponseSet, error) {
 }
 
 func (ctx *MultiContext) Query(request *Request) (ResponseSet, error) {
+	return ctx.QueryWithHeaders(request, nil)
+}
+
+func (ctx *MultiContext) QueryWithHeaders(request *Request, headers http.Header) (ResponseSet, error) {
 
 	resultsIdx := map[string]int{}
 	result := ResponseSet{}
