@@ -65,7 +65,7 @@ func (ctx *SynContext) QueryWithHeaders(r *Request, headers http.Header) (Respon
 
 	tr := ResponseSet{}
 
-	resp, err := r.QueryResponse(ctx.Host, nil)
+	resp, err := r.QueryResponseWithHeaders(ctx.Host, nil, headers)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (ctx *MultiContext) QueryWithHeaders(request *Request, headers http.Header)
 	responses := []ResponseSet{}
 
 	for _, host := range ctx.Hosts {
-		tr, err := host.Query(request)
+		tr, err := host.QueryWithHeaders(request, headers)
 		if err != nil {
 			return nil, err
 		}
