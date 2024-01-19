@@ -1116,7 +1116,7 @@ type TransportError struct {
 	Body []byte `json:"body" yaml:"body"`
 }
 
-func (r *TransportError) Error() string {
+func (r TransportError) Error() string {
 	return fmt.Sprintf("opentsdb: status=%d", r.Code)
 }
 
@@ -1130,7 +1130,7 @@ type RequestError struct {
 	} `json:"error" yaml:"error"`
 }
 
-func (r *RequestError) Error() string {
+func (r RequestError) Error() string {
 	return fmt.Sprintf("opentsdb: status=%d req='%s' msg=%s", r.Err.Code, r.Request, r.Err.Message)
 }
 
