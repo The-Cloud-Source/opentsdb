@@ -42,18 +42,34 @@ type DPmap map[Epoch]Point
 // Response is a query response:
 // http://opentsdb.net/docs/build/html/api_http/query/index.html#response.
 type Response struct {
-	Metric        string   `json:"metric" yaml:"metric"`
-	Tags          TagSet   `json:"tags" yaml:"tags"`
-	AggregateTags []string `json:"aggregateTags" yaml:"aggregateTags"`
-	Query         Query    `json:"query,omitempty" yaml:"query,omitempty"`
-	DPS           DPmap    `json:"dps" yaml:"dps"`
-
+	Metric        string            `json:"metric" yaml:"metric"`
+	Tags          TagSet            `json:"tags" yaml:"tags"`
+	AggregateTags []string          `json:"aggregateTags" yaml:"aggregateTags"`
+	Query         Query             `json:"query,omitempty" yaml:"query,omitempty"`
+	DPS           DPmap             `json:"dps" yaml:"dps"`
+	Stats         *QueryStats       `json:"stats,omitempty" yaml:"stats,omitempty"`
+	StatsSummary  QueryStatsSummary `json:"statsSummary,omitempty" yaml:"statsSummary,omitempty"`
 	//missing "annotations": [...]
 	//missing "annotations": [...]
 	//missing "tsuids": [...]
 
 	// fields added by translating proxy
 	// SQL string `json:"sql,omitempty"`
+}
+
+// StatsSummary is that lastelemt of the json array response when it exists
+type QueryStatsSummary map[string]any
+
+// QueryStats are optional stats returned with the response
+type QueryStats struct {
+	Index                int     `json:"queryIndex" yaml:"queryIndex"`
+	EmittedDPS           int     `json:"emittedDPs" yaml:"emittedDPs"`
+	AggregationTime      float64 `json:"aggregationTime" yaml:"aggregationTime"`
+	GroupByTime          float64 `json:"groupByTime" yaml:"groupByTime"`
+	QueryScanTime        float64 `json:"queryScanTime" yaml:"queryScanTime"`
+	SaltScannerMergeTime float64 `json:"saltScannerMergeTime" yaml:"saltScannerMergeTime"`
+	SerializationTime    float64 `json:"serializationTime" yaml:"serializationTime"`
+	UidToStringTime      float64 `json:"uidToStringTime" yaml:"uidToStringTime"`
 }
 
 func (r *Response) Copy() *Response {
