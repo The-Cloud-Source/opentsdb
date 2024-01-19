@@ -23,4 +23,4 @@ var userAgent = ""
 
 func UserAgentSet(ua string) { userAgent = ua }
 func SetUserAgent(ua string) { userAgent = ua }
-func GetUserAgent() string   { return ua }
+func GetUserAgent() string   { return userAgent }
