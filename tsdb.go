@@ -420,6 +420,18 @@ type Query struct {
 	//"rollupUsage"
 	//percentiles
 	//rollupUsage
+	G_alias                string `json:"alias" yaml:"alias"`
+	G_currentTagKey        string `json:"currentTagKey" yaml:"currentTagKey"`
+	G_currentTagValue      string `json:"currentTagValue" yaml:"currentTagValue"`
+	G_disableDownsampling  bool   `json:"disableDownsampling" yaml:"disableDownsampling"`
+	G_downsampleAggregator string `json:"downsampleAggregator" yaml:"downsampleAggregator"`
+	G_downsampleFillPolicy string `json:"downsampleFillPolicy" yaml:"downsampleFillPolicy"`
+	G_downsampleInterval   string `json:"downsampleInterval" yaml:"downsampleInterval"`
+	G_refId                string `json:"refId" yaml:"refId"`
+	G_datasource           struct {
+		Type string `json:"type" yaml:"type"`
+		Uid  string `json:"uid" yaml:"uid"`
+	} `json:"datasource" yaml:"datasource"`
 }
 
 type Filter struct {
