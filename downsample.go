@@ -67,3 +67,11 @@ func (r *Request) EstimateDPS() (dps int64, err error) {
 	}
 	return dps, nil
 }
+
+func (r *Request) DisableDownsampling() bool {
+	v := false
+	for _, q := range r.Queries {
+		v = v || q.G_disableDownsampling
+	}
+	return v
+}
